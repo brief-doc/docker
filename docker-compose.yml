@@ -1,0 +1,5 @@
+POSTGRES_DB=myapp
+POSTGRES_USER=myuser
+POSTGRES_PASSWORD=changeme
+DATABASE_URL=postgresql+psycopg2://myuser:changeme@db:5432/myapp
+REDIS_URL=redis://redis:6379/0
