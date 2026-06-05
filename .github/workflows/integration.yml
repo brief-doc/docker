@@ -6,8 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive # ← 서브모듈을 가져와야 함 (기본은 안 가져옴)
+          submodules: recursive
       - name: Create placeholder .env
-      - run: cp .env.example .env # ← 실제 비밀값은 없지만, compose가 env_file을 찾게 하기 위함
-      - run: docker compose config # compose 문법 검증
-      - run: docker compose build # 세 조각이 함께 빌드되는지 검증
+        run: cp .env.example .env
+      - run: docker compose config
+      - run: docker compose build
