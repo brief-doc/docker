@@ -1,0 +1,11 @@
+name: Integration
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive # ← 서브모듈을 가져와야 함 (기본은 안 가져옴)
+      - run: docker compose config # compose 문법 검증
+      - run: docker compose build # 세 조각이 함께 빌드되는지 검증

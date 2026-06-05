@@ -1,0 +1,26 @@
+name: Bump submodule
+on:
+  repository_dispatch:
+    types: [submodule-update]
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.SUBMODULE_PAT }} # 서브모듈 fetch + push 권한
+          fetch-depth: 0
+      - name: Update pointer
+        run: |
+          SUB="${{ github.event.client_payload.submodule }}"
+          git submodule update --remote "$SUB"
+          if git diff --quiet -- "$SUB"; then
+            echo "변경 없음: $SUB"; exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "$SUB"
+          git commit -m "chore: bump $SUB submodule"
+          git push
