@@ -1,0 +1,58 @@
+# ============================================================
+#  개발용 compose — db + redis + backend 만 띄움
+#  프론트엔드는 호스트에서 네이티브로 실행 (cd frontend && npm run dev)
+#
+#  실행:   docker compose -f docker-compose.dev.yml up -d
+#  중지:   docker compose -f docker-compose.dev.yml stop      (데이터 유지)
+#  로그:   docker compose -f docker-compose.dev.yml logs -f backend
+#
+#  ※ 볼륨 이름(pgdata/redisdata)이 기존 docker-compose.yml 과 동일하므로
+#    같은 프로젝트 디렉토리에서 실행하면 DB 데이터를 그대로 공유합니다.
+#  ※ down -v 는 절대 금지 (pgdata 삭제됨)
+# ============================================================
+services:
+  backend:
+    build: ./backend
+    working_dir: /app/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app            # 코드 마운트 → --reload 로 자동 반영
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /app                    # ← app 패키지 못 찾는 에러 해결
+      WATCHFILES_FORCE_POLLING: "true"    # ← Windows bind mount reload 해결
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  db:
+    image: postgres:16
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"               # 호스트/DBeaver/네이티브 백엔드에서 접속 가능
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redisdata:/data
+    ports:
+      - "6379:6379"               # (선택) 디버깅/네이티브 백엔드용
+
+volumes:
+  pgdata:
+  redisdata:
