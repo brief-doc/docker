@@ -9,6 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: dev
           submodules: recursive
           token: ${{ secrets.SUBMODULE_PAT }} # 서브모듈 fetch + push 권한
           fetch-depth: 0
