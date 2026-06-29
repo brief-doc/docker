@@ -1,0 +1,13 @@
+FROM hf.co/gyduddl/ko-gemma-2-9b-category-lora-v3:ko-catagory-gemma-2-9b-it-fixed.Q6_K
+
+TEMPLATE """<bos><start_of_turn>user
+{{ if .System }}{{ .System }}
+
+{{ end }}{{ .Prompt }}<end_of_turn>
+<start_of_turn>model
+"""
+
+PARAMETER stop "<start_of_turn>"
+PARAMETER repeat_penalty 1.15
+PARAMETER repeat_last_n 64
+PARAMETER temperature 0.3

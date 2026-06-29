@@ -1,0 +1,10 @@
+FROM hf.co/gyduddl/ko-gemma-2-9b-category-lora-checkpoints:ko-rag-gemma-2-9b-it.Q6_K_M
+
+TEMPLATE """<bos><start_of_turn>user
+{{ if .System }}{{ .System }}
+
+{{ end }}{{ .Prompt }}<end_of_turn>
+<start_of_turn>model
+"""
+
+PARAMETER stop "<start_of_turn>"
