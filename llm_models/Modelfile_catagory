@@ -1,4 +1,4 @@
-FROM hf.co/gyduddl/ko-gemma-2-9b-category-lora-v3:ko-catagory-gemma-2-9b-it-q6k-fixed
+FROM hf.co/gyduddl/ko-gemma-2-9b-category-lora-v3:ko-catagory-gemma-2-9b-it-fixed.Q6_K
 
 TEMPLATE """<bos><start_of_turn>user
 {{ if .System }}{{ .System }}
